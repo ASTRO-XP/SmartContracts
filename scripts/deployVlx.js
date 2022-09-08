@@ -8,13 +8,13 @@ async function main() {
 
    console.log(`VLX Token deployed to ${velox.address}`);
 
-   await velox.deployTransaction.wait(4);
+   // await velox.deployTransaction.wait(4);
 
-   await hre.run("verify:verify", {
-      address: velox.address,
-      contract: "contracts/Velox.sol:Velox",
-      constructorArguments: [],
-   });
+   // await hre.run("verify:verify", {
+   //    address: velox.address,
+   //    contract: "contracts/Velox.sol:Velox",
+   //    constructorArguments: [],
+   // });
 }
 
 main().catch((error) => {
