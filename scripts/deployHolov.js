@@ -16,13 +16,13 @@ async function main() {
       arg2,
       arg3
    );
-   await holoVCore.deployTransaction.wait(4);
+   // await holoVCore.deployTransaction.wait(4);
 
-   await hre.run("verify:verify", {
-      address: holoVCore.address,
-      contract: "contracts/HoloVCore.sol:HoloVCore",
-      constructorArguments: [arg1, arg2, arg3],
-   });
+   // await hre.run("verify:verify", {
+   //    address: holoVCore.address,
+   //    contract: "contracts/HoloVCore.sol:HoloVCore",
+   //    constructorArguments: [arg1, arg2, arg3],
+   // });
 }
 
 main().catch((error) => {

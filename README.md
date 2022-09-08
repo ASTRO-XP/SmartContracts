@@ -2,21 +2,21 @@
 
 **_AXP Token Contract Address and Etherscan Link_**
 
-`0x3B574DDa0f88fe5d69f86d96AD928e594d212440`
+`0xC4962B9269C8466FD897FaCD2E12C270911A544B`
 
-`https://goerli.etherscan.io/token/0x3B574DDa0f88fe5d69f86d96AD928e594d212440`
+`https://goerli.etherscan.io/token/0xC4962B9269C8466FD897FaCD2E12C270911A544B`
 
 **_VLX Token Contract Address_**
 
-`0x90E718EFdD5466185Fd5C34b4409a12CE5C93cC0`
+`0x128D6674F83BdBc02e29A3306685D9aBEbE6B3B0`
 
-`https://goerli.etherscan.io/token/0x90E718EFdD5466185Fd5C34b4409a12CE5C93cC0`
+`https://goerli.etherscan.io/token/0x128D6674F83BdBc02e29A3306685D9aBEbE6B3B0`
 
 **_HoloV Core Token Contract Address_**
 
-`0xb8FaEafA5a38748B1954F3D2846E52f3f5403ffA`
+`0x6C645819A4c384A583317199eb0A1a33a8a681FB`
 
-`https://goerli.etherscan.io/token/0xb8FaEafA5a38748B1954F3D2846E52f3f5403ffA`
+`https://goerli.etherscan.io/token/0x6C645819A4c384A583317199eb0A1a33a8a681FB`
 
 # Developer Notes
 
