@@ -247,257 +247,263 @@ describe("HOLO-V", function () {
                "new lazulith metadata ipfs cid"
          );
       });
-      it("should allow app blacksmith to forge - called from app - meta|NoVLX", async function () {
-         //velox instantiation
-         const Velox = await ethers.getContractFactory("Velox");
-         const velox = await Velox.deploy();
-         contractVelox = await velox.deployed();
-         await contract.setVelox(contractVelox.address);
-         await contractVelox.grantRole(
-            keccak256(utils.toUtf8Bytes("AXP_SYS")),
-            contract.address
-         );
-         //mint initial velox
-         await contractVelox.mint(playerA.address, utils.parseEther("50000"));
-         //test minted velox
-         expect(await contractVelox.balanceOf(playerA.address)).to.equal(
-            utils.parseEther("50000")
-         );
-         //static calls
-         const mintedID1 = await contract
-            .connect(minter)
-            .callStatic.holoProject(playerA.address, testURI);
-         //actual
-         await contract.connect(minter).holoProject(playerA.address, testURI);
-         //static
-         const mintedID2 = await contract
-            .connect(minter)
-            .callStatic.holoProject(
-               playerA.address,
-               "FND2UNUIjhbh8712893BHJDBJh"
+      describe.only("Forging", async function () {
+         it("should allow app blacksmith to forge - called from app - meta|NoVLX", async function () {
+            //velox instantiation
+            const Velox = await ethers.getContractFactory("Velox");
+            const velox = await Velox.deploy();
+            contractVelox = await velox.deployed();
+            await contract.setVelox(contractVelox.address);
+            await contractVelox.grantRole(
+               keccak256(utils.toUtf8Bytes("AXP_SYS")),
+               contract.address
             );
-         //actual
-         await contract
-            .connect(minter)
-            .holoProject(playerA.address, "FND2UNUIjhbh8712893BHJDBJh");
+            //mint initial velox
+            await contractVelox.mint(
+               playerA.address,
+               utils.parseEther("50000")
+            );
+            //test minted velox
+            expect(await contractVelox.balanceOf(playerA.address)).to.equal(
+               utils.parseEther("50000")
+            );
+            //static calls
+            const mintedID1 = await contract
+               .connect(minter)
+               .callStatic.holoProject(playerA.address, testURI);
+            //actual
+            await contract
+               .connect(minter)
+               .holoProject(playerA.address, testURI);
+            //static
+            const mintedID2 = await contract
+               .connect(minter)
+               .callStatic.holoProject(
+                  playerA.address,
+                  "FND2UNUIjhbh8712893BHJDBJh"
+               );
+            //actual
+            await contract
+               .connect(minter)
+               .holoProject(playerA.address, "FND2UNUIjhbh8712893BHJDBJh");
 
-         expect(await contract.balanceOf(playerA.address)).to.equal("2");
-         expect(await contract.totalSupply()).to.equal(2);
-         await contract
-            .connect(playerA)
-            .setApprovalForAll(blacksmith.address, true);
-         //forging
-         //static
-         const mintedID3 = await contract
-            .connect(blacksmith)
-            .callStatic.vForge(
-               mintedID1,
-               mintedID2,
-               playerA.address,
-               "new lazulith ipfs cid from game rng metadata factory",
-               0
+            expect(await contract.balanceOf(playerA.address)).to.equal("2");
+            expect(await contract.totalSupply()).to.equal(2);
+            await contract
+               .connect(playerA)
+               .setApprovalForAll(blacksmith.address, true);
+            //forging
+            //static
+            const mintedID3 = await contract
+               .connect(blacksmith)
+               .callStatic.vForge(
+                  mintedID1,
+                  mintedID2,
+                  playerA.address,
+                  "new lazulith ipfs cid from game rng metadata factory",
+                  0
+               );
+            //actual
+            await contract
+               .connect(blacksmith)
+               .vForge(
+                  mintedID1,
+                  mintedID2,
+                  playerA.address,
+                  "new lazulith ipfs cid from game rng metadata factory",
+                  0
+               );
+            expect(await contract.balanceOf(playerA.address)).to.equal("1");
+            expect(await contract.totalSupply()).to.equal(1);
+            expect(await contract.tokenURI(mintedID3)).to.equal(
+               (await contract.getAstroGateway()) +
+                  "new lazulith ipfs cid from game rng metadata factory"
             );
-         //actual
-         await contract
-            .connect(blacksmith)
-            .vForge(
-               mintedID1,
-               mintedID2,
-               playerA.address,
-               "new lazulith ipfs cid from game rng metadata factory",
-               0
+            expect(await contractVelox.balanceOf(playerA.address)).to.equal(
+               utils.parseEther("50000")
             );
-         expect(await contract.balanceOf(playerA.address)).to.equal("1");
-         expect(await contract.totalSupply()).to.equal(1);
-         expect(await contract.tokenURI(mintedID3)).to.equal(
-            (await contract.getAstroGateway()) +
-               "new lazulith ipfs cid from game rng metadata factory"
-         );
-         expect(await contractVelox.balanceOf(playerA.address)).to.equal(
-            utils.parseEther("50000")
-         );
-      });
-      it("should allow app blacksmith to forge - called from app - non-meta|noVlx", async function () {
-         //velox instantiation
-         const Velox = await ethers.getContractFactory("Velox");
-         const velox = await Velox.deploy();
-         contractVelox = await velox.deployed();
-         await contract.setVelox(contractVelox.address);
-         await contractVelox.grantRole(
-            keccak256(utils.toUtf8Bytes("AXP_SYS")),
-            contract.address
-         );
-         //mint initial velox
-         await contractVelox.mint(playerA.address, utils.parseEther("50000"));
-         //test minted velox
-         expect(await contractVelox.balanceOf(playerA.address)).to.equal(
-            utils.parseEther("50000")
-         );
-         //static calls
-         const mintedID1 = await contract
-            .connect(minter)
-            .callStatic.holoProject(playerA.address, testURI);
-         //actual
-         await contract.connect(minter).holoProject(playerA.address, testURI);
-         //static
-         const mintedID2 = await contract
-            .connect(minter)
-            .callStatic.holoProject(
-               playerA.address,
-               "FND2UNUIjhbh8712893BHJDBJh"
+         });
+         it("should allow app blacksmith to forge - called from app - non-meta|noVlx", async function () {
+            //velox instantiation
+            const Velox = await ethers.getContractFactory("Velox");
+            const velox = await Velox.deploy();
+            contractVelox = await velox.deployed();
+            await contract.setVelox(contractVelox.address);
+            await contractVelox.grantRole(
+               keccak256(utils.toUtf8Bytes("AXP_SYS")),
+               contract.address
             );
-         //actual
-         await contract
-            .connect(minter)
-            .holoProject(playerA.address, "FND2UNUIjhbh8712893BHJDBJh");
+            //mint initial velox
+            await contractVelox.mint(
+               playerA.address,
+               utils.parseEther("50000")
+            );
+            //test minted velox
+            expect(await contractVelox.balanceOf(playerA.address)).to.equal(
+               utils.parseEther("50000")
+            );
+            //static calls
+            const mintedID1 = await contract
+               .connect(minter)
+               .callStatic.holoProject(playerA.address, testURI);
+            //actual
+            await contract
+               .connect(minter)
+               .holoProject(playerA.address, testURI);
+            //static
+            const mintedID2 = await contract
+               .connect(minter)
+               .callStatic.holoProject(
+                  playerA.address,
+                  "FND2UNUIjhbh8712893BHJDBJh"
+               );
+            //actual
+            await contract
+               .connect(minter)
+               .holoProject(playerA.address, "FND2UNUIjhbh8712893BHJDBJh");
 
-         expect(await contract.balanceOf(playerA.address)).to.equal("2");
-         expect(await contract.totalSupply()).to.equal(2);
-         await contract
-            .connect(playerA)
-            .setApprovalForAll(blacksmith.address, true);
-         //forging
-         //static
-         // const mintedID3 = await contract
-         //    .connect(blacksmith)
-         //    .callStatic.vForge(mintedID1, mintedID2, playerA.address, "test", 56);
-         //actual
-         await contract
-            .connect(blacksmith)
-            .vForge(mintedID1, mintedID2, playerA.address, "", 0);
-         // expect(await contract.balanceOf(playerA.address)).to.equal("1");
-         // expect(await contract.totalSupply()).to.equal(1);
-         // expect(mintedID3).to.equal(0);
-         // expect(await contractVelox.balanceOf(playerA.address)).to.equal(
-         //    utils.parseEther((50000 - 56).toString)
-         // );
-      });
-      it("should allow app blacksmith to forge - called from app - meta|withVLX - for manual due to hardhat network bug", async function () {
-         //velox instantiation
-         const Velox = await ethers.getContractFactory("Velox");
-         const velox = await Velox.deploy();
-         contractVelox = await velox.deployed();
-         await contract.setVelox(contractVelox.address);
-         await contractVelox.grantRole(
-            keccak256(utils.toUtf8Bytes("AXP_SYS")),
-            contract.address
-         );
-         //mint initial velox
-         await contractVelox.mint(playerA.address, utils.parseEther("50000"));
-         //test minted velox
-         expect(await contractVelox.balanceOf(playerA.address)).to.equal(
-            utils.parseEther("50000")
-         );
-         //static calls
-         const mintedID1 = await contract
-            .connect(minter)
-            .callStatic.holoProject(playerA.address, testURI);
-         //actual
-         await contract.connect(minter).holoProject(playerA.address, testURI);
-         //static
-         const mintedID2 = await contract
-            .connect(minter)
-            .callStatic.holoProject(
-               playerA.address,
-               "FND2UNUIjhbh8712893BHJDBJh"
+            expect(await contract.balanceOf(playerA.address)).to.equal("2");
+            expect(await contract.totalSupply()).to.equal(2);
+            await contract
+               .connect(playerA)
+               .setApprovalForAll(blacksmith.address, true);
+            //forging
+            //static
+            // const mintedID3 = await contract
+            //    .connect(blacksmith)
+            //    .callStatic.vForge(mintedID1, mintedID2, playerA.address, "test", 56);
+            //actual
+            await contract
+               .connect(blacksmith)
+               .vForge(mintedID1, mintedID2, playerA.address, "", 0);
+            expect(await contract.balanceOf(playerA.address)).to.equal("0");
+            expect(await contract.totalSupply()).to.equal(0);
+            // expect(mintedID3).to.equal(0);
+            // expect(await contractVelox.balanceOf(playerA.address)).to.equal(
+            //    utils.parseEther((50000 - 56).toString)
+            // );
+         });
+         it("should allow app blacksmith to forge - called from app - meta|withVLX - for manual due to hardhat network bug", async function () {
+            //velox instantiation
+            const Velox = await ethers.getContractFactory("Velox");
+            const velox = await Velox.deploy();
+            contractVelox = await velox.deployed();
+            await contract.setVelox(contractVelox.address);
+            await contractVelox.grantRole(
+               keccak256(utils.toUtf8Bytes("AXP_SYS")),
+               contract.address
             );
-         //actual
-         await contract
-            .connect(minter)
-            .holoProject(playerA.address, "FND2UNUIjhbh8712893BHJDBJh");
-
-         expect(await contract.balanceOf(playerA.address)).to.equal("2");
-         expect(await contract.totalSupply()).to.equal(2);
-         await contract
-            .connect(playerA)
-            .setApprovalForAll(blacksmith.address, true);
-         //forging
-         //static
-         // commenting out for manual testing due to bug
-         // const mintedID3 = await contract
-         //    .connect(blacksmith)
-         //    .callStatic.vForge(
-         //       mintedID1,
-         //       mintedID2,
-         //       playerA.address,
-         //       "new lazulith ipfs cid from game rng metadata factory",
-         //       256
-         //    );
-         // //actual
-         // await contract
-         //    .connect(blacksmith)
-         //    .vForge(
-         //       mintedID1,
-         //       mintedID2,
-         //       playerA.address,
-         //       "new lazulith ipfs cid from game rng metadata factory",
-         //       256
-         //    );
-         // expect(await contract.balanceOf(playerA.address)).to.equal("1");
-         // expect(await contract.totalSupply()).to.equal(1);
-         // expect(await contract.tokenURI(mintedID3)).to.equal(
-         //    (await contract.getAstroGateway()) +
-         //       "new lazulith ipfs cid from game rng metadata factory"
-         // );
-         // expect(await contractVelox.balanceOf(playerA.address)).to.equal(
-         //    utils.parseEther((50000 - 256).toString())
-         // );
-      });
-      it("should allow app blacksmith to forge - called from app - non-meta|withVlx - for manual due to hardhat network bug", async function () {
-         //velox instantiation
-         const Velox = await ethers.getContractFactory("Velox");
-         const velox = await Velox.deploy();
-         contractVelox = await velox.deployed();
-         await contract.setVelox(contractVelox.address);
-         await contractVelox.grantRole(
-            keccak256(utils.toUtf8Bytes("AXP_SYS")),
-            contract.address
-         );
-         //mint initial velox
-         await contractVelox.mint(playerA.address, utils.parseEther("50000"));
-         //test minted velox
-         expect(await contractVelox.balanceOf(playerA.address)).to.equal(
-            utils.parseEther("50000")
-         );
-         //static calls
-         const mintedID1 = await contract
-            .connect(minter)
-            .callStatic.holoProject(playerA.address, testURI);
-         //actual
-         await contract.connect(minter).holoProject(playerA.address, testURI);
-         //static
-         const mintedID2 = await contract
-            .connect(minter)
-            .callStatic.holoProject(
+            //mint initial velox
+            await contractVelox.mint(
                playerA.address,
-               "FND2UNUIjhbh8712893BHJDBJh"
+               utils.parseEther("50000")
             );
-         //actual
-         await contract
-            .connect(minter)
-            .holoProject(playerA.address, "FND2UNUIjhbh8712893BHJDBJh");
+            //test minted velox
+            expect(await contractVelox.balanceOf(playerA.address)).to.equal(
+               utils.parseEther("50000")
+            );
+            //static calls
+            const mintedID1 = await contract
+               .connect(minter)
+               .callStatic.holoProject(playerA.address, testURI);
+            //actual
+            await contract
+               .connect(minter)
+               .holoProject(playerA.address, testURI);
+            //static
+            const mintedID2 = await contract
+               .connect(minter)
+               .callStatic.holoProject(
+                  playerA.address,
+                  "FND2UNUIjhbh8712893BHJDBJh"
+               );
+            //actual
+            await contract
+               .connect(minter)
+               .holoProject(playerA.address, "FND2UNUIjhbh8712893BHJDBJh");
 
-         expect(await contract.balanceOf(playerA.address)).to.equal("2");
-         expect(await contract.totalSupply()).to.equal(2);
-         await contract
-            .connect(playerA)
-            .setApprovalForAll(blacksmith.address, true);
-         // commenting out below code for manual testing due to hardhat bug
-         //forging
-         //static
-         // const mintedID3 = await contract
-         //    .connect(blacksmith)
-         //    .callStatic.vForge(mintedID1, mintedID2, playerA.address, "", 56);
-         // //actual
-         // await contract
-         //    .connect(blacksmith)
-         //    .vForge(mintedID1, mintedID2, playerA.address, "", 56);
-         // expect(await contract.balanceOf(playerA.address)).to.equal("0");
-         // expect(await contract.totalSupply()).to.equal(0);
-         // expect(mintedID3).to.equal(0);
-         // expect(await contractVelox.balanceOf(playerA.address)).to.equal(
-         //    utils.parseEther((50000 - 56).toString)
-         // );
+            expect(await contract.balanceOf(playerA.address)).to.equal("2");
+            expect(await contract.totalSupply()).to.equal(2);
+            await contract
+               .connect(playerA)
+               .setApprovalForAll(blacksmith.address, true);
+            //forging
+            await contract
+               .connect(blacksmith)
+               .vForge(
+                  mintedID1,
+                  mintedID2,
+                  playerA.address,
+                  "new lazulith ipfs cid from game rng metadata factory",
+                  256
+               );
+            expect(await contract.balanceOf(playerA.address)).to.equal("1");
+            expect(await contract.totalSupply()).to.equal(1);
+            expect(await contractVelox.balanceOf(playerA.address)).to.equal(
+               utils.parseEther((50000 - 256).toString())
+            );
+         });
+         it("should allow app blacksmith to forge - called from app - non-meta|withVlx - for manual due to hardhat network bug", async function () {
+            //velox instantiation
+            const Velox = await ethers.getContractFactory("Velox");
+            const velox = await Velox.deploy();
+            contractVelox = await velox.deployed();
+            await contract.setVelox(contractVelox.address);
+            await contractVelox.grantRole(
+               keccak256(utils.toUtf8Bytes("AXP_SYS")),
+               contract.address
+            );
+            //mint initial velox
+            await contractVelox.mint(
+               playerA.address,
+               utils.parseEther("50000")
+            );
+            //test minted velox
+            expect(await contractVelox.balanceOf(playerA.address)).to.equal(
+               utils.parseEther("50000")
+            );
+            //static calls
+            const mintedID1 = await contract
+               .connect(minter)
+               .callStatic.holoProject(playerA.address, testURI);
+            //actual
+            await contract
+               .connect(minter)
+               .holoProject(playerA.address, testURI);
+            //static
+            const mintedID2 = await contract
+               .connect(minter)
+               .callStatic.holoProject(
+                  playerA.address,
+                  "FND2UNUIjhbh8712893BHJDBJh"
+               );
+            //actual
+            await contract
+               .connect(minter)
+               .holoProject(playerA.address, "FND2UNUIjhbh8712893BHJDBJh");
+
+            expect(await contract.balanceOf(playerA.address)).to.equal("2");
+            expect(await contract.totalSupply()).to.equal(2);
+            await contract
+               .connect(playerA)
+               .setApprovalForAll(blacksmith.address, true);
+            // commenting out below code for manual testing due to hardhat bug
+            //forging
+            //static
+            // const mintedID3 = await contract
+            //    .connect(blacksmith)
+            //    .callStatic.vForge(mintedID1, mintedID2, playerA.address, "", 56);
+            // //actual
+            // await contract
+            //    .connect(blacksmith)
+            //    .vForge(mintedID1, mintedID2, playerA.address, "", 56);
+            // expect(await contract.balanceOf(playerA.address)).to.equal("0");
+            // expect(await contract.totalSupply()).to.equal(0);
+            // expect(mintedID3).to.equal(0);
+            // expect(await contractVelox.balanceOf(playerA.address)).to.equal(
+            //    utils.parseEther((50000 - 56).toString)
+            // );
+         });
       });
    });
 
