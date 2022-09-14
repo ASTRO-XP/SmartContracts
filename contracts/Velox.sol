@@ -14,9 +14,8 @@ interface IVelox {
 
 contract Velox is ERC20, AccessControlEnumerable {
     bytes32 public constant OWNER_ROLE = keccak256("OWNER_ROLE");
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    bytes32 public constant AXP_SYS = keccak256("AXP_SYS");
-
+    bytes32 public constant MINTER_BURNER_ROLE = keccak256("MINTER_BURNER_ROLE");
+    
     /// @notice The EIP-712 typehash for the contract's domain
     bytes32 public constant DOMAIN_TYPE_HASH =
         keccak256(
@@ -44,11 +43,11 @@ contract Velox is ERC20, AccessControlEnumerable {
 
     constructor() ERC20("Velox", "VLX") {
         _setRoleAdmin(OWNER_ROLE, OWNER_ROLE);
-        _setRoleAdmin(MINTER_ROLE, OWNER_ROLE);
+        _setRoleAdmin(MINTER_BURNER_ROLE, OWNER_ROLE);
 
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(OWNER_ROLE, _msgSender());
-        _setupRole(MINTER_ROLE, _msgSender());
+        _setupRole(MINTER_BURNER_ROLE, _msgSender());
 
         domainSeparator = keccak256(
             abi.encode(
@@ -80,7 +79,7 @@ contract Velox is ERC20, AccessControlEnumerable {
         emit SignerRemoved(signer);
     }
 
-    function mint(address account, uint256 amount) public onlyMinter {
+    function mint(address account, uint256 amount) public onlyMinterBurner {
         _mint(account, amount);
     }
 
@@ -97,7 +96,7 @@ contract Velox is ERC20, AccessControlEnumerable {
         address burner,
         uint256 amount,
         string memory reason
-    ) public onlyAxpSys {
+    ) public onlyMinterBurner {
         _burn(burner, amount);
         emit BurnForReason(amount, reason);
     }
@@ -147,15 +146,11 @@ contract Velox is ERC20, AccessControlEnumerable {
         require(hasRole(OWNER_ROLE, _msgSender()), "VLX: must be the owner");
         _;
     }
-    modifier onlyMinter() {
+    modifier onlyMinterBurner() {
         require(
-            hasRole(MINTER_ROLE, _msgSender()),
-            "VLX: must be a minter to mint"
+            hasRole(MINTER_BURNER_ROLE, _msgSender()),
+            "VLX: must be a minter or burner to mint or burn"
         );
-        _;
-    }
-    modifier onlyAxpSys() {
-        require(hasRole(AXP_SYS, _msgSender()), "VLX: caller not an AXP_SYS");
         _;
     }
 }

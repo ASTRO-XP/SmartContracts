@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./Velox.sol";
 
 contract HoloVCore is
     Context,
@@ -39,8 +38,6 @@ contract HoloVCore is
      * "Lazuliths" are subpath uri of the token on the ipfs gateway
      */
     string private astroGateway;
-
-    address public veloxAddress;
 
     event HoloProject(
         address indexed _owner,
@@ -93,8 +90,7 @@ contract HoloVCore is
         uint256 _fuser1ID,
         uint256 _fuser2ID,
         address _fuser,
-        string memory _neoHoloVLazulith,
-        uint256 _burnVlxAmt
+        string memory _neoHoloVLazulith
     ) public virtual onlyAstroBlacksmith returns (uint256) {
         uint256 id = 0;
         if (bytes(_neoHoloVLazulith).length != 0) {
@@ -102,9 +98,6 @@ contract HoloVCore is
         }
         burn(_fuser1ID);
         burn(_fuser2ID);
-        if (_burnVlxAmt > 0) {
-            _burnVlx(_burnVlxAmt, _fuser, "vForging Cost");
-        }
         return id;
     }
 
@@ -118,14 +111,6 @@ contract HoloVCore is
         _setTokenURI(id, _lazulith);
         emit HoloProject(_to, _lazulith, id);
         return id;
-    }
-
-    function _burnVlx(
-        uint256 _burnVlxAmt,
-        address _fuser,
-        string memory reason
-    ) internal {
-        IVelox(veloxAddress).utilBurnFor(_burnVlxAmt, _fuser, reason);
     }
 
     function tokenURI(uint256 tokenId)
@@ -179,10 +164,6 @@ contract HoloVCore is
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
-    }
-
-    function setVelox(address _veloxAddress) external onlyOwner {
-        veloxAddress = _veloxAddress;
     }
 
     function getAstroGateway() public view virtual returns (string memory) {
