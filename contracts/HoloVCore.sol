@@ -85,7 +85,7 @@ contract HoloVCore is
         _setTokenURI(_id, _lazulith);
         emit Enhanced(_hvOwner, _lazulith, _id);
     }
-
+    
     function vForge(
         uint256 _fuser1ID,
         uint256 _fuser2ID,
