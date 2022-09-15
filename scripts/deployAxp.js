@@ -10,13 +10,13 @@ async function main() {
    console.log(`AXP Token deployed to ${astroXP.address}`);
    console.log(`Token Constructor Arguments ${conArgs}`);
 
-   // await astroXP.deployTransaction.wait(5);
+   await astroXP.deployTransaction.wait(4);
 
-   // await hre.run("verify:verify", {
-   //    address: astroXP.address,
-   //    contract: "contracts/AstroXP.sol:AstroXP",
-   //    constructorArguments: [conArgs],
-   // });
+   await hre.run("verify:verify", {
+      address: astroXP.address,
+      contract: "contracts/AstroXP.sol:AstroXP",
+      constructorArguments: [conArgs],
+   });
 }
 
 main().catch((error) => {
