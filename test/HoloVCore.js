@@ -15,7 +15,7 @@ const testURI = 'N897N23FMINUHQN99CYN9238YNM2CM8Y1'
 const tokenName = 'Holo-V'
 const tokenSymbol = 'HOLOV'
 const astroGateway = 'https://gateway.io/ipfs/'
-describe.only('HOLO-V', function () {
+describe('HOLO-V', function () {
   this.beforeEach(async function () {
     ;[
       owner,
